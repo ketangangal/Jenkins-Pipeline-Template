@@ -34,11 +34,4 @@ pipeline {
             }
         }
     }
-    <!-- post {
-            always 
-            {
-                sh 'sudo docker rmi -f $ECR_REPOSITORY:$IMAGE_TAG'
-                sh 'sudo docker system prune -f'
-            }
-        } -->
 }
