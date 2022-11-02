@@ -1,23 +1,45 @@
 pipeline {
     agent any
+    environment {
+        AWS_ACCESS_KEY = credentials('AWS_ACCESS_KEY')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+        AWS_REGION = credentials('AWS_REGION')
+        ECR_REPOSITORY = credentials('ECR_REPOSITORY')
+        AWS_ACCOUNT_ID = credentials('AWS_ACCOUNT_ID')
+        IMAGE_TAG = 'latest'
+      }
 
     stages {
         stage('Continuous Integration') {
-            steps {
-                echo 'Running train Job'
-                 }
+            steps 
+            {
+                echo "Linting repository"
+                echo "Running unit tests"
             }
+        }
 
         stage('Continuous Delivery') {
-            steps {
-                echo 'Running test job'
-                }
+            steps 
+            {
+                sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com''
+                sh 'sudo docker build -t $ECR_REPOSITORY:$IMAGE_TAG .'
+                sh 'sudo docker push $ECR_REPOSITORY:$IMAGE_TAG'
             }
+        }
 
         stage('Continuous Deployment') {
-            steps {
+            steps 
+            {
                 echo 'Running Model Endpoint Test'
-                }
             }
+        }
+
+        post {
+            always 
+            {
+                sh 'sudo docker rmi -f $ECR_REPOSITORY:$IMAGE_TAG'
+                sh 'sudo docker system prune -f'
+            }
+        }
     }
 }
