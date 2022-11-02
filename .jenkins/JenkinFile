@@ -18,9 +18,9 @@ pipeline {
         stage('Continuous Delivery') {
             steps 
             {
-                sh 'sudo aws ecr get-login-password --region ap-south-1 | sudo docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.ap-south-1.amazonaws.com'
-                sh 'sudo docker build -t ${ECR_REPOSITORY}:${IMAGE_TAG} .'
-                sh 'sudo docker push ${ECR_REPOSITORY}:${IMAGE_TAG}'
+                sh 'aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.ap-south-1.amazonaws.com'
+                sh 'docker build -t ${ECR_REPOSITORY}:${IMAGE_TAG} .'
+                sh 'docker push ${ECR_REPOSITORY}:${IMAGE_TAG}'
             }
         }
 
