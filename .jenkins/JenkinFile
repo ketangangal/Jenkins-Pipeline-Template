@@ -1,0 +1,23 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Continuous Integration') {
+            steps {
+                echo 'Running train Job'
+                 }
+            }
+
+        stage('Continuous Delivery') {
+            steps {
+                echo 'Running test job'
+                }
+            }
+
+        stage('Continuous Deployment') {
+            steps {
+                echo 'Running Model Endpoint Test'
+                }
+            }
+    }
+}
