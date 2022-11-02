@@ -25,8 +25,7 @@ pipeline {
                 sh 'aws configure set aws_secret_access_key ${AWS_SECRET_KEY} --profile ubuntu'
                 sh 'aws configure set region ap-south-1 --profile ubuntu'
                 sh 'aws configure set output "text" --profile ubuntu'
-
-                sh 'aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.ap-south-1.amazonaws.com'
+                sh 'docker login -u AWS -p $(aws ecr get-login-password --region ap-south-1) ${AWS_ACCOUNT_ID}.dkr.ecr.ap-south-1.amazonaws.com'
                 sh 'docker build -t ${ECR_REPOSITORY}:${IMAGE_TAG} .'
                 sh 'docker push ${ECR_REPOSITORY}:${IMAGE_TAG}'
             }
