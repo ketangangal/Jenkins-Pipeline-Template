@@ -52,13 +52,19 @@ pipeline {
 
             }
         }
+        
+        stage('Sanity check') {
+            steps {
+                input "Does the environment look ok?"
+            }
+        }
                                       
         stage('Continuous Deployment') {
             steps 
             {
-                script 
-                {
-                echo 'Running Model Endpoint Test'
+                
+                sshagent(['ssh_key']) {
+                    sh """ssh -o StrictHostKeyChecking=no -l ubuntu http://15.206.237.81 'cd /home/ubuntu/ && pwd' """
                 }
             }
         }
