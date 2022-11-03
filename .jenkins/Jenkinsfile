@@ -1,5 +1,13 @@
 pipeline {
     agent any
+    environment 
+    {
+        ECR_REPOSITORY = credentials('ECR_REPOSITORY')
+        AWS_ACCOUNT_ID = credentials('AWS_ACCOUNT_ID')
+        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+        IMAGE_TAG = 'latest'
+    }
     stages {
         stage('Continuous Integration') {
             steps 
@@ -12,27 +20,39 @@ pipeline {
             }
         }
 
-        stage('Continuous Delivery') {
-            environment {
-                ECR_REPOSITORY = credentials('ECR_REPOSITORY')
-                AWS_ACCOUNT_ID = credentials('AWS_ACCOUNT_ID')
-                AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
-                AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
-                IMAGE_TAG = 'latest'
-             }
+        stage('Login to ECR') {
             steps 
             {   
                 script 
                 {
-
                     sh 'docker login -u AWS -p $(aws ecr get-login-password --region ap-south-1) ${AWS_ACCOUNT_ID}.dkr.ecr.ap-south-1.amazonaws.com'
-                    sh 'docker build -t ${ECR_REPOSITORY}:${IMAGE_TAG} .'
-                    sh 'docker push ${ECR_REPOSITORY}:${IMAGE_TAG}'
                 }
 
             }
         }
 
+        stage('Build Image') {
+            steps 
+            {   
+                script 
+                {
+                    dockerImage = docker.build "${ECR_REPOSITORY}:${IMAGE_TAG}"
+                }
+
+            }
+        }
+
+        stage('Build Image') {
+            steps 
+            {   
+                script 
+                {
+                    sh 'docker push ${ECR_REPOSITORY}:${IMAGE_TAG}'
+                }
+
+            }
+        }
+                                      
         stage('Continuous Deployment') {
             steps 
             {
