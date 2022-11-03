@@ -64,7 +64,7 @@ pipeline {
             {
                 
                 sshagent(['ssh_key']) {
-                    sh """ssh -o StrictHostKeyChecking=no -l ubuntu 15.206.237.81 'cd /home/ubuntu/ && pwd' """
+                    sh """ssh -o StrictHostKeyChecking=no -l ubuntu 15.206.122.83 'cd /home/ubuntu/ && pwd' """
                 }
             }
         }
