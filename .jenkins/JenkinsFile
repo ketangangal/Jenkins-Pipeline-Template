@@ -12,7 +12,6 @@ pipeline {
             }
         }
 
-
         stage('Continuous Delivery') {
             environment {
                 ECR_REPOSITORY = credentials('ECR_REPOSITORY')
