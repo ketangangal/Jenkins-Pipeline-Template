@@ -42,7 +42,7 @@ pipeline {
             }
         }
 
-        stage('Build Image') {
+        stage('Push Image') {
             steps 
             {   
                 script 
