@@ -68,6 +68,7 @@ pipeline {
         always
         {
             sh 'docker image prune -a -f'
+            sh 'rm -rf /var/jenkins_home/workspaces/sensor'
         }
     }
 }
