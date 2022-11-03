@@ -22,8 +22,11 @@ pipeline {
              }
             steps 
             {   
+                def dockerHome = tool 'myDocker'
+                env.PATH = "${dockerHome}/bin:${env.PATH}"
                 script 
                 {
+
                     sh 'docker login -u AWS -p $(aws ecr get-login-password --region ap-south-1) ${AWS_ACCOUNT_ID}.dkr.ecr.ap-south-1.amazonaws.com'
                     sh 'docker build -t ${ECR_REPOSITORY}:${IMAGE_TAG} .'
                     sh 'docker push ${ECR_REPOSITORY}:${IMAGE_TAG}'
